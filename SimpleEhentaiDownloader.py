@@ -7,7 +7,6 @@ from lxml import etree
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/93.0.4577.82 Safari/537.36 ',
-    'cookie': 'ipb_member_id=2431190; ipb_pass_hash=f5bb85ff7f87a7947f384bc1c22fb00e; yay=louder; igneous=f0e2edfdd; sk=7otz2o870itdwjjhxce14eoksaxc',
     # your cookie
     'Connection': 'close'
 }
@@ -25,7 +24,6 @@ header_img = {
     'accept-language': 'zh-CN,zh;q=0.9',
     'cache-control': 'no-cache',
     'Connection': 'close',
-    'cookie': 'ipb_member_id=2431190; ipb_pass_hash=f5bb85ff7f87a7947f384bc1c22fb00e; yay=louder; igneous=f0e2edfdd; sk=7otz2o870itdwjjhxce14eoksaxc',
     # your cookie
     'pragma': 'no-cache',
     'referer': 'https://e-hentai.org/g/944656/0c2120f188/',
