@@ -1,13 +1,14 @@
 import os.path
 import time
-import fitz # contians in pymupdf
+import fitz  # contians in pymupdf
 import requests
 from lxml import etree
 
 header = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/93.0.4577.82 Safari/537.36 ',
-    'cookie': '',  # your cookie
+    'cookie': 'ipb_member_id=2431190; ipb_pass_hash=f5bb85ff7f87a7947f384bc1c22fb00e; yay=louder; igneous=f0e2edfdd; sk=7otz2o870itdwjjhxce14eoksaxc',
+    # your cookie
     'Connection': 'close'
 }
 
@@ -23,7 +24,9 @@ header_img = {
     'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'zh-CN,zh;q=0.9',
     'cache-control': 'no-cache',
-    'cookie': '', # your cookie
+    'Connection': 'close',
+    'cookie': 'ipb_member_id=2431190; ipb_pass_hash=f5bb85ff7f87a7947f384bc1c22fb00e; yay=louder; igneous=f0e2edfdd; sk=7otz2o870itdwjjhxce14eoksaxc',
+    # your cookie
     'pragma': 'no-cache',
     'referer': 'https://e-hentai.org/g/944656/0c2120f188/',
     'sec-ch-ua': '"Google Chrome";v="95", "Chromium";v="95", ";Not A Brand";v="99"',
@@ -149,29 +152,35 @@ def imgUrlGraberAndDownload(page_url_list, title, path):
         while count < 5:
             try:
                 resp = requests.get(url=_img_url, headers=header_download, proxies=proxies)
+                img_name = _img_url.split('/')[-1]
+                with open(_img_dir + '\\' + img_name, 'wb+') as f:
+                    f.write(resp.content)
                 break
             except:
                 count += 1
                 print('error occured {} times,sleep 1s...'.format(count))
                 time.sleep(1)
                 continue
-        img_name = _img_url.split('/')[-1]
-        with open(_img_dir + '\\' + img_name, 'wb+') as f:
-            f.write(resp.content)
 
     # 以title为名新建文件夹
-    img_dir = str(os.path.join(path, title)).replace('|', '_')
+    img_dir = str(os.path.join(path, title)).replace('|', '_').replace('/', '_')
     os.makedirs(img_dir)
     global header_img
     # todo 多线程改造提高效率
+    count = 0
+    total = len(page_url_list)
     for page_url in page_url_list:
+        # count += 1
+        # if count <= 42:
+        #     continue
         # 获取url
         img_html = getIMGHTML(page_url, header_img)
         img_url = img_html.xpath('//*[@id="img"]/@src')[0]
         print('get_img_url:' + img_url)
         # 下载图片
         downloadImg(img_url, img_dir)
-        print('down')
+        count += 1
+        print('down {}/{}.'.format(count,total))
     return img_dir
 
 
@@ -183,7 +192,7 @@ def downloadByPage(g_url, html):
     header_img['referer'] = g_url
     page_url_list = pageGraber(g_url, pageCount)
     title = html.xpath('//*[@id="gn"]')[0].text
-    return imgUrlGraberAndDownload(page_url_list=page_url_list, title=title, path='D:\\temp')
+    return imgUrlGraberAndDownload(page_url_list=page_url_list, title=title, path='C:\\Users\\hibian\\Downloads')
 
     # 使用上面的方法 抓到url后马上下载,以免失效
     # img_url_list = imgUrlGraber(page_url_list)
@@ -199,6 +208,7 @@ def ehentaiDownloader(g_url):
     # 判断是否有种子文件
     html = getHTML(g_url)
     num = int(str(html.xpath('/html/body/div[2]/div[3]/div[3]/p[3]/a')[0].text)[18:-1])
+    num = 0  # todo 强制使用页面下载todo
     print('num=%d' % num)
     if num == 0:
         # 没种子通过页面图片下载
@@ -251,8 +261,6 @@ if __name__ == '__main__':
     # url = 'https://e-hentai.org/favorites.php'
     # info = get_info(url)
 
-    # 下载单个图集
-    g_url = 'https://e-hentai.org/g/944656/0c2120f188/'
-    img_dir_ = ehentaiDownloader(g_url)
-    # 转换为pdf
+    urls = 'https://exhentai.org/g/1483388/c89daa8280/'
+    img_dir_ = ehentaiDownloader(urls)
     convert(img_dir_)
