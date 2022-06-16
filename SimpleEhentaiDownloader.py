@@ -103,7 +103,7 @@ def pageGraber(g_url, pageCount):
     while page_no < pageCount:
         print(page_url.format(page_no) + ' grabbing img_html_url')
         page_html = getIMGHTML(page_url.format(page_no), header_img)
-        page_url_list.extend(page_html.xpath('//*[@id="gdt"]/div/a/@href'))
+        page_url_list.extend(page_html.xpath('//*[@id="gdt"]/div/div/a/@href'))
         page_no += 1
     return page_url_list
 
